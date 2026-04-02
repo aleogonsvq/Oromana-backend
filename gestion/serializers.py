@@ -40,4 +40,4 @@ class FaltaSerializer(serializers.ModelSerializer):
             'estado', 'maestro_asignado', 'maestro_asignado_detalle'
         ]
         # Hacemos que ciertos campos sean solo de lectura para evitar que un maestro los modifique al crear la falta
-        read_only_fields = ['estado', 'maestro_asignado', 'maestro']
+        read_only_fields = ['maestro']

@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import User, TramoHorario, MaestroGuardia, Falta, Disponibilidad
+from django.contrib.auth.hashers import make_password
 
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -9,6 +10,12 @@ class CustomUserAdmin(admin.ModelAdmin):
     list_filter = ('rol', 'is_staff')
     # Barra de búsqueda
     search_fields = ('email',)
+    # AÑADE ESTA FUNCIÓN: Intercepta el guardado para encriptar la contraseña
+    def save_model(self, request, obj, form, change):
+        # Si hay contraseña y NO empieza por el algoritmo de encriptación de Django...
+        if obj.password and not obj.password.startswith('pbkdf2_'):
+            obj.password = make_password(obj.password) # ...la encriptamos
+        super().save_model(request, obj, form, change)
 
 @admin.register(TramoHorario)
 class TramoHorarioAdmin(admin.ModelAdmin):

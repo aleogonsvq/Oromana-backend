@@ -59,3 +59,12 @@ class FaltaViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Asignamos al creador como el maestro de la falta de forma automática
         serializer.save(maestro=self.request.user)
+
+    def perform_create(self, serializer):
+        # Blindamos la seguridad: cuando un maestro crea una falta, 
+        # forzamos que siempre nazca como PENDIENTE y sin sustituto, mande lo que mande.
+        serializer.save(
+            maestro=self.request.user,
+            estado='PENDIENTE',
+            maestro_asignado=None
+        )
