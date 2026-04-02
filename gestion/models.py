@@ -82,15 +82,37 @@ class MaestroGuardia(models.Model):
         ('MAYOR55', 'Mayor de 55 años'),
     )
     
-    # Lo vinculamos al usuario de forma única (un usuario solo tiene un perfil de guardia)
     usuario = models.OneToOneField('User', on_delete=models.CASCADE, related_name='perfil_guardia')
     rol_guardia = models.CharField(max_length=20, choices=ROLES_GUARDIA)
     
-    # Relación muchos a muchos: Un maestro puede estar disponible en varios tramos
-    tramos_disponibles = models.ManyToManyField(TramoHorario, related_name='maestros_disponibles')
+    # ATENCIÓN: Hemos eliminado el ManyToMany de tramos_disponibles de aquí.
 
     def __str__(self):
         return f"Guardia: {self.usuario.email} - {self.get_rol_guardia_display()}"
+    
+
+class Disponibilidad(models.Model):
+    """
+    Cruza el Maestro de Guardia con un Día de la semana y un Tramo Horario concreto.
+    """
+    DIAS_SEMANA = (
+        ('LUNES', 'Lunes'),
+        ('MARTES', 'Martes'),
+        ('MIERCOLES', 'Miércoles'),
+        ('JUEVES', 'Jueves'),
+        ('VIERNES', 'Viernes'),
+    )
+    
+    maestro_guardia = models.ForeignKey(MaestroGuardia, on_delete=models.CASCADE, related_name='disponibilidades')
+    dia = models.CharField(max_length=15, choices=DIAS_SEMANA)
+    tramo = models.ForeignKey(TramoHorario, on_delete=models.CASCADE)
+
+    class Meta:
+        # Evita que se duplique por error el mismo día y tramo para el mismo maestro
+        unique_together = ('maestro_guardia', 'dia', 'tramo')
+
+    def __str__(self):
+        return f"{self.get_dia_display()} - {self.tramo.nombre}"
 
 class Falta(models.Model):
     """

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, TramoHorario, MaestroGuardia, Falta
+from .models import User, TramoHorario, MaestroGuardia, Falta, Disponibilidad
 
 @admin.register(User)
 class CustomUserAdmin(admin.ModelAdmin):
@@ -15,18 +15,19 @@ class TramoHorarioAdmin(admin.ModelAdmin):
     list_display = ('nombre',)
     search_fields = ('nombre',)
 
+
+# 1. Creamos el Inline para la disponibilidad
+class DisponibilidadInline(admin.TabularInline):
+    model = Disponibilidad
+    extra = 1  # Filas en blanco que aparecerán por defecto
+
 @admin.register(MaestroGuardia)
 class MaestroGuardiaAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'rol_guardia', 'mostrar_tramos')
+    list_display = ('usuario', 'rol_guardia')
     list_filter = ('rol_guardia',)
     search_fields = ('usuario__email',)
-    # filter_horizontal crea una interfaz visual mucho más cómoda para asignar múltiples tramos
-    filter_horizontal = ('tramos_disponibles',)
-
-    def mostrar_tramos(self, obj):
-        # Muestra los tramos asignados separados por comas en la tabla principal
-        return ", ".join([tramo.nombre for tramo in obj.tramos_disponibles.all()])
-    mostrar_tramos.short_description = 'Tramos Disponibles'
+    # Añadimos el panel integrado
+    inlines = [DisponibilidadInline]
 
 @admin.register(Falta)
 class FaltaAdmin(admin.ModelAdmin):
