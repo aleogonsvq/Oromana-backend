@@ -7,7 +7,7 @@ from django.db.models import Q
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 
-from .models import TramoHorario, MaestroGuardia, Falta
+from .models import TramoHorario, MaestroGuardia, Falta, User
 from .serializers import TramoHorarioSerializer, MaestroGuardiaSerializer, FaltaSerializer, UserSerializer, RegistroSerializer # <- ¿Añadiste UserSerializer aquí?
 from .permissions import IsDirectivoOrSuperadmin
 @api_view(['GET'])
