@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import TramoHorarioViewSet, MaestroGuardiaViewSet, FaltaViewSet, current_user
+from .views import TramoHorarioViewSet, MaestroGuardiaViewSet, FaltaViewSet, current_user, RegistroView
 
 router = DefaultRouter()
 router.register(r'tramos', TramoHorarioViewSet)
@@ -18,6 +18,9 @@ urlpatterns = [
     
     # Nuestro endpoint para saber quién está logueado
     path('auth/me/', current_user, name='current_user'),
+
+    # NUEVA URL DE REGISTRO
+    path('auth/registro/', RegistroView.as_view(), name='registro_usuario'),
     
     # Resto de la API
     path('', include(router.urls)),

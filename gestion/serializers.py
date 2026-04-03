@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import User, TramoHorario, MaestroGuardia, Disponibilidad, Falta
+# Añade esta importación arriba del todo si no la tienes
+from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,3 +43,26 @@ class FaltaSerializer(serializers.ModelSerializer):
         ]
         # Hacemos que ciertos campos sean solo de lectura para evitar que un maestro los modifique al crear la falta
         read_only_fields = ['maestro']
+
+# Añade esta clase al final del archivo
+class RegistroSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+
+    def validate_email(self, value):
+        # Regla 1: Validar el dominio del correo
+        if not value.endswith('@ceiporomana.com'):
+            raise serializers.ValidationError("Solo se permiten correos del dominio corporativo @ceiporomana.com")
+        return value
+
+    def create(self, validated_data):
+        # Regla 2: Crear el usuario, encriptar contraseña y asignar rol MAESTRO por defecto
+        user = User.objects.create(
+            email=validated_data['email'],
+            password=make_password(validated_data['password']),
+            rol='MAESTRO'
+        )
+        return user

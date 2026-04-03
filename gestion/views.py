@@ -4,8 +4,11 @@ from rest_framework.response import Response                       # <- ¿Está 
 from django.utils import timezone
 from django.db.models import Q
 
+from rest_framework import generics
+from rest_framework.permissions import AllowAny
+
 from .models import TramoHorario, MaestroGuardia, Falta
-from .serializers import TramoHorarioSerializer, MaestroGuardiaSerializer, FaltaSerializer, UserSerializer # <- ¿Añadiste UserSerializer aquí?
+from .serializers import TramoHorarioSerializer, MaestroGuardiaSerializer, FaltaSerializer, UserSerializer, RegistroSerializer # <- ¿Añadiste UserSerializer aquí?
 from .permissions import IsDirectivoOrSuperadmin
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -68,3 +71,12 @@ class FaltaViewSet(viewsets.ModelViewSet):
             estado='PENDIENTE',
             maestro_asignado=None
         )
+
+
+class RegistroView(generics.CreateAPIView):
+    """
+    Endpoint público para que los maestros se registren.
+    """
+    queryset = User.objects.all()
+    permission_classes = [AllowAny] # Público, no requiere token
+    serializer_class = RegistroSerializer
