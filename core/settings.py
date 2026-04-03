@@ -69,7 +69,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo. En producción pondremos la URL de Vue.
+#CORS_ALLOW_ALL_ORIGINS = True  # Solo para desarrollo. En producción pondremos la URL de Vue.
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173", # El de desarrollo (Vite)
+    "http://localhost:8080", # El nuevo de producción (Docker/Nginx)
+    "http://127.0.0.1:8080",
+]
 
 ROOT_URLCONF = 'core.urls'
 
