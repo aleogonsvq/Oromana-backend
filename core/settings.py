@@ -37,7 +37,7 @@ SECRET_KEY = 'django-insecure-y#_2)f8e(jy1*jxjlnbhan$8f9m^(kp_%=z^q@s1#e24*&6agz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -61,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,6 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", # El de desarrollo (Vite)
     "http://localhost:8080", # El nuevo de producción (Docker/Nginx)
     "http://127.0.0.1:8080",
+    "https://ceip-oromana.vercel.app"
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -177,3 +179,5 @@ SIMPLE_JWT = {
 # Configuración de correo para entorno de desarrollo (imprime en la consola)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'direccion@ceiporomana.com'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
