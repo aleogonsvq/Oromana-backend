@@ -59,10 +59,15 @@ class RegistroSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        # Regla 2: Crear el usuario, encriptar contraseña y asignar rol MAESTRO por defecto
-        user = User.objects.create(
+        # 1. Creamos la instancia del usuario sin guardar todavía en base de datos
+        user = User(
             email=validated_data['email'],
-            password=make_password(validated_data['password']),
             rol='MAESTRO'
         )
+        # 2. Usamos el método nativo de Django que asegura la encriptación perfecta
+        user.set_password(validated_data['password'])
+        
+        # 3. Guardamos en la base de datos
+        user.save()
+        
         return user
